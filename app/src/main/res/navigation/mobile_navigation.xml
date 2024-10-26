@@ -29,4 +29,11 @@
         android:name="com.example.myapplication.ui.finished.FinishedFragment"
         android:label="@string/finished_events"
         tools:layout="@layout/fragment_finished" />
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.example.myapplication.ui.favorite.FavoriteFragment"
+        android:label="Favorite"
+        tools:layout="@layout/fragment_favorite"/>
+
 </navigation>

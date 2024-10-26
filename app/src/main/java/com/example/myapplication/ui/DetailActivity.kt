@@ -9,22 +9,33 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
+import com.example.myapplication.data.local.entity.EventsEntity
 import com.example.myapplication.data.response.ListEventsItem
 import com.example.myapplication.databinding.ActivityDetailBinding
+import com.example.myapplication.utils.ViewModelFactory
 
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "NAME_SHADOWING")
 class DetailActivity : AppCompatActivity(), View.OnClickListener {
+
 
     private lateinit var binding: ActivityDetailBinding
 
+    private var isFavorite = false
+
+    // menghubungkan viewmodel
+    private lateinit var detailViewModel: DetailViewModel
+
     companion object {
         const val KEY_EVENT = "key_event"
+        const val EXTRA_EVENT = "extra_event"
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -42,6 +53,11 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
         supportActionBar?.hide()
 
+        detailViewModel = obtainViewModel(this@DetailActivity)
+
+
+
+
         // elsplisit intent untuk detail
         val event = if (Build.VERSION.SDK_INT <= 30) {
             intent.getParcelableExtra(KEY_EVENT, ListEventsItem::class.java)
@@ -49,7 +65,14 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
             intent.getParcelableExtra(KEY_EVENT)
         }
 
-        if (event != null){
+        if (event != null) {
+            // Cek apakah event sudah ada di database dan setel status isFavorite
+            detailViewModel.isEventFavorite(event.id.toString()).observe(this) { isFavoriteInDb ->
+                isFavorite = isFavoriteInDb
+                updateFavoriteIcon()
+            }
+
+
             // Display event data
             binding.name.text = event.name
             binding.description.text = HtmlCompat.fromHtml(
@@ -76,23 +99,69 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
         // implicit intent untuk button
         binding.btnLink.setOnClickListener(this)
+
+        // fab untuk insert dan delete dari favorite
+        binding.fabFavorite.setOnClickListener {
+            val eventEntity = convertToEntity(event!!)
+            if (isFavorite) {
+                detailViewModel.delete(eventEntity)
+            } else {
+                detailViewModel.insert(eventEntity)
+            }
+            isFavorite = !isFavorite
+            updateFavoriteIcon()
+        }
+
+    }
+
+    private fun obtainViewModel(activity: AppCompatActivity): DetailViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory).get(DetailViewModel::class.java)
+    }
+
+    private fun updateFavoriteIcon() {
+        // Update FAB icon berdasarkan status favorit
+        val drawable = if (isFavorite) {
+            R.drawable.baseline_favorite_24
+        } else {
+            R.drawable.baseline_favorite_border_24
+        }
+        binding.fabFavorite.setImageDrawable(
+            ContextCompat.getDrawable(
+                binding.fabFavorite.context,
+                drawable
+            )
+        )
+    }
+
+    // untuk mengconvfert listEvent ke entity
+    private fun convertToEntity(event: ListEventsItem): EventsEntity {
+        return EventsEntity(
+            id = event.id.toString(),
+            name = event.name,
+            mediaCover = event.mediaCover
+        )
     }
 
     // onClick button untuk implicit item
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onClick(p0: View?) {
-        // getparcelable extra yang ada di liseventitem untuk mendapatkan link tujuan
-        val link = if (Build.VERSION.SDK_INT <= 30) {
-            intent.getParcelableExtra(KEY_EVENT, ListEventsItem::class.java)
-        } else {
-            intent.getParcelableExtra(KEY_EVENT)
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btn_link -> {
+                // getparcelable extra yang ada di liseventitem untuk mendapatkan link tujuan
+                val link = if (Build.VERSION.SDK_INT <= 30) {
+                    intent.getParcelableExtra(KEY_EVENT, ListEventsItem::class.java)
+                } else {
+                    intent.getParcelableExtra(KEY_EVENT)
+                }
+                if (link != null) {
+                    val web = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(link.link)
+                    ) // setelah mendapatkan parcelable, panggil link yanag ada di listeventitem untuk dijadikan link tujuan.
+                    startActivity(web)
+                }
+            }
         }
-        if (link != null){
-            val web = Intent(Intent.ACTION_VIEW, Uri.parse(link.link)) // setelah mendapatkan parcelable, panggil link yanag ada di listeventitem untuk dijadikan link tujuan.
-            startActivity(web)
-        }
-
     }
-
-
 }

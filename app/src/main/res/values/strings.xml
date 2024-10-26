@@ -7,5 +7,8 @@
     <string name="finished_events">Finished Events</string>
     <string name="register">Register</string>
     <string name="description">Description</string>
+    <string name="favorite">Favorite</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
