@@ -12,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class finishedViewModel : ViewModel() {
+class FinishedViewModel : ViewModel() {
 
     private val _listEvent = MutableLiveData<List<ListEventsItem>>()
     val listevent: LiveData<List<ListEventsItem>> = _listEvent

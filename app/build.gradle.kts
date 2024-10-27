@@ -1,4 +1,4 @@
-import com.google.devtools.ksp.gradle.model.Ksp
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -75,5 +75,17 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
+    // circleimageview
+    implementation(libs.circleimageview)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
+
+    // coroutine
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // workmanager
+    implementation(libs.androidx.work.runtime.ktx)
 
 }

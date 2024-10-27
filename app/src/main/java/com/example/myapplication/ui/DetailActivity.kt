@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +23,7 @@ import com.example.myapplication.databinding.ActivityDetailBinding
 import com.example.myapplication.utils.ViewModelFactory
 
 
-@Suppress("DEPRECATION", "NAME_SHADOWING")
+@Suppress("DEPRECATION")
 class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
 
@@ -35,7 +36,6 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         const val KEY_EVENT = "key_event"
-        const val EXTRA_EVENT = "extra_event"
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -102,21 +102,46 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
         // fab untuk insert dan delete dari favorite
         binding.fabFavorite.setOnClickListener {
-            val eventEntity = convertToEntity(event!!)
-            if (isFavorite) {
-                detailViewModel.delete(eventEntity)
+            val listEvent = if (Build.VERSION.SDK_INT <= 30) {
+                intent.getParcelableExtra(KEY_EVENT, ListEventsItem::class.java)
             } else {
-                detailViewModel.insert(eventEntity)
+                intent.getParcelableExtra(KEY_EVENT)
             }
-            isFavorite = !isFavorite
-            updateFavoriteIcon()
+
+            if (listEvent != null){
+                val eventEntity = EventsEntity(
+                    listEvent.id.toString(),
+                    listEvent.name,
+                    listEvent.mediaCover,
+                    listEvent.description,
+                    listEvent.beginTime,
+                    listEvent.endTime,
+                    listEvent.ownerName,
+                    listEvent.summary,
+                    listEvent.category,
+                    listEvent.cityName,
+                    listEvent.quota,
+                    listEvent.registrants,
+                    listEvent.link,
+                    listEvent.imageLogo
+                )
+                if (isFavorite) {
+                    detailViewModel.delete(eventEntity)
+                } else {
+                    detailViewModel.insert(eventEntity)
+                }
+                isFavorite = !isFavorite
+                updateFavoriteIcon()
+            }else {
+                Toast.makeText(this, "Event tidak ditemukan", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
 
     private fun obtainViewModel(activity: AppCompatActivity): DetailViewModel {
         val factory = ViewModelFactory.getInstance(activity.application)
-        return ViewModelProvider(activity, factory).get(DetailViewModel::class.java)
+        return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
     }
 
     private fun updateFavoriteIcon() {
@@ -131,15 +156,6 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
                 binding.fabFavorite.context,
                 drawable
             )
-        )
-    }
-
-    // untuk mengconvfert listEvent ke entity
-    private fun convertToEntity(event: ListEventsItem): EventsEntity {
-        return EventsEntity(
-            id = event.id.toString(),
-            name = event.name,
-            mediaCover = event.mediaCover
         )
     }
 

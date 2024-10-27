@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.response.ListEventsItem
@@ -26,8 +25,6 @@ class HomeFragment : Fragment()  {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -43,7 +40,7 @@ class HomeFragment : Fragment()  {
 
 
         //inisialisasi viewmodel di fragment
-        val homeViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(HomeViewModel::class.java)
+        val homeViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[HomeViewModel::class.java]
         homeViewModel.listevent.observe(viewLifecycleOwner){events ->
             setUpcomingList(events)
         }
@@ -53,7 +50,7 @@ class HomeFragment : Fragment()  {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
-        val finishedViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(finishedViewModel::class.java)
+        val finishedViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[FinishedViewModel::class.java]
         finishedViewModel.listevent.observe(viewLifecycleOwner){events ->
             setFinishedLst(events)
         }
@@ -65,26 +62,11 @@ class HomeFragment : Fragment()  {
         finishedViewModel.isLoading.observe(viewLifecycleOwner){
             showLoading(it)
         }
-
-
-
-//        // inisialisasi searchbar
-//        with(binding){
-//            searchView.setupWithSearchBar(searchBar)
-//            searchView
-//                .editText
-//                .setOnEditorActionListener{textView, actionId, events ->
-//                    searchBar.setText(searchView.text)
-//                    searchView.hide()
-//                    false
-//                }
-//        }
-
     }
 
 
     private fun setFinishedLst(events: List<ListEventsItem>){
-        val adapter = finishedHomeAdapter()
+        val adapter = FinishedHomeAdapter()
 
 
         binding.rvFinished.layoutManager = LinearLayoutManager(requireContext())
@@ -100,7 +82,7 @@ class HomeFragment : Fragment()  {
 
 
     private fun setUpcomingList(events: List<ListEventsItem>) {
-        val adapter = upcomingHomeAdapter()
+        val adapter = UpcomingHomeAdapter()
 
         //inisialisasi layout manager recycler view
         binding.rvUpcoming.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

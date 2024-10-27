@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.myapplication.data.local.entity.EventsEntity
-import com.example.myapplication.data.response.ListEventsItem
 
 @Dao
 interface EventsDao {
@@ -22,16 +21,16 @@ interface EventsDao {
     @Delete
     fun delete(event: EventsEntity)
 
-    @Query("SELECT * FROM events WHERE id = :id")
+    @Query("SELECT * FROM events_table WHERE id = :id")
     fun getAllEvent(id: String): LiveData<EventsEntity>
 
-    @Query("SELECT * FROM events")
+    @Query("SELECT * FROM events_table")
     fun getAllEvents(): LiveData<List<EventsEntity>>
 
-    @Query("SELECT * FROM events")
+    @Query("SELECT * FROM events_table")
     fun getFavoriteEvents(): LiveData<List<EventsEntity>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM events WHERE id = :eventId)")
+    @Query("SELECT EXISTS(SELECT 1 FROM events_table WHERE id = :eventId)")
     fun isFavorite(eventId: String): LiveData<Boolean>
 
 

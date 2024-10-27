@@ -1,9 +1,8 @@
 package com.example.myapplication.ui.favorite
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.data.EventsRepository
+import com.example.myapplication.data.repository.EventsRepository
 
 class FavoriteViewModel(application: Application) : ViewModel()  {
 
@@ -11,8 +10,5 @@ class FavoriteViewModel(application: Application) : ViewModel()  {
 
     fun getAllEvents() = mEventsRepository.getAllEvents()
 
-    fun isEventFavorite(eventId: String): LiveData<Boolean> {
-        return mEventsRepository.isEventFavorite(eventId)
-    }
 
 }

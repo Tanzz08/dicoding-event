@@ -8,7 +8,14 @@
     <string name="register">Register</string>
     <string name="description">Description</string>
     <string name="favorite">Favorite</string>
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="profile">Profile</string>
+    <string name="name">Bustanul Khair Rahman</string>
+    <string name="link_github">https://github.com/Tanzz08</string>
+    <string name="change_theme">Ubah Tema Apliklasi</string>
+    <string name="todo">TODO</string>
+    <string name="izinkan_notifikasi">Izinkan Notifikasi : </string>
+    <string name="izinkan">Izinkan</string>
+    <string name="batalkan">Batalkan</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

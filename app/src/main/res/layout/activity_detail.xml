@@ -191,6 +191,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:clickable="true"
+            android:contentDescription="@string/todo"
             android:focusable="true"
             app:fabSize="normal"
             app:layout_constraintBottom_toTopOf="@+id/city_name"

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.response.ListEventsItem
@@ -27,7 +26,7 @@ class FinishedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val notificationsViewModel =
-            ViewModelProvider(this).get(FinishedViewModel::class.java)
+            ViewModelProvider(this)[FinishedViewModel::class.java]
 
         _binding = FragmentFinishedBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -40,7 +39,7 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val finishedViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(FinishedViewModel::class.java)
+        val finishedViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[FinishedViewModel::class.java]
         finishedViewModel.listevent.observe(viewLifecycleOwner){events ->
             setFinishedList(events)
         }

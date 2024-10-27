@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.example.myapplication.R
-import com.example.myapplication.data.local.entity.EventsEntity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.response.ListEventsItem
 import com.example.myapplication.databinding.FragmentFavoriteBinding
 import com.example.myapplication.ui.finished.FinishedAdapter
@@ -15,14 +14,7 @@ import com.example.myapplication.utils.ViewModelFactory
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FavoriteFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
@@ -31,13 +23,12 @@ class FavoriteFragment : Fragment() {
     private lateinit var adapter: FinishedAdapter
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,14 +42,36 @@ class FavoriteFragment : Fragment() {
         adapter = FinishedAdapter()
         binding.rvFavorite.adapter = adapter
 
+        // Set LayoutManager untuk RV
+        binding.rvFavorite.layoutManager = LinearLayoutManager(requireContext())
+
         viewModel.getAllEvents().observe(viewLifecycleOwner) { users ->
-            val items = arrayListOf<EventsEntity>()
+            val items = arrayListOf<ListEventsItem>()
             users.map {
-                val item = ListEventsItem(id = it.id.toInt(), name = it.name, mediaCover = it.mediaCover)
+                val item = ListEventsItem(
+                    id = it.id.toInt(),
+                    name = it.name,
+                    mediaCover = it.mediaCover.toString(),
+                    description = it.description,
+                    beginTime = it.beginTime,
+                    endTime = it.endTime,
+                    ownerName = it.ownerName,
+                    summary = it.summary,
+                    category = it.category,
+                    cityName = it.cityName,
+                    quota = it.quota,
+                    registrants = it.registrants,
+                    link = it.link,
+                    imageLogo = it.imageLogo
+                )
                 items.add(item)
             }
             adapter.submitList(items)
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

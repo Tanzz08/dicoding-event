@@ -11,7 +11,7 @@ import com.example.myapplication.data.response.ListEventsItem
 import com.example.myapplication.databinding.ItemHomeUpcomingEventBinding
 import com.example.myapplication.ui.DetailActivity
 
-class upcomingHomeAdapter: ListAdapter<ListEventsItem, upcomingHomeAdapter.UpcomingViewHolder>(DIFF_CALLBACK) {
+class UpcomingHomeAdapter: ListAdapter<ListEventsItem, UpcomingHomeAdapter.UpcomingViewHolder>(DIFF_CALLBACK) {
     class UpcomingViewHolder(private val binding: ItemHomeUpcomingEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(events : ListEventsItem){
             binding.cardTitle.text = events.name

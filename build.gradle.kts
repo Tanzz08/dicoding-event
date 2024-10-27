@@ -4,5 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 
     // plugin untuk menggunakan room
+    //noinspection GradleDependency
     id("com.google.devtools.ksp") version "2.0.20-1.0.25" apply false
+
+
 }
